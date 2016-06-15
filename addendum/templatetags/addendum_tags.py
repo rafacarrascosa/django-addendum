@@ -2,6 +2,7 @@ from django import template
 from django.template.base import TemplateSyntaxError
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from django.contrib.admin.utils import quote
 from django.core.urlresolvers import reverse
 from urllib.parse import urlencode
 from ..models import get_cached_snippet
@@ -102,9 +103,9 @@ class SnippetNode(template.Node):
 
         if context.request.user.is_staff:
             if snippet:
-                url = reverse('admin:addendum_snippet_change', args=(key,)) + '?_popup=1'
+                url = reverse('admin:addendum_snippet_change', args=(quote(key),)) + '?_popup=1'
             else:
-                query = urlencode({'_popup': 1, 'key': key, 'text': self.nodelist.render(context)})
+                query = urlencode({'_popup': 1, 'key': quote(key), 'text': self.nodelist.render(context)})
                 url = reverse('admin:addendum_snippet_add') + '?' + query
 
             link = mark_safe('<br><a class="btn btn-xs popup" href="{}">Edit</a>'.format(url))
